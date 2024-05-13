@@ -4,9 +4,12 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    types: [closed]
 
 jobs:
   build:
+    if: github.event_name == 'pull_request' || contains(github.event.head_commit.message, 'BUILD_CONTAINER_IMAGE')
     runs-on: ubuntu-latest
 
     steps:
@@ -20,7 +23,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: .
-        file: ./guestbook-go/Dockerfile
+        file: ./Dockerfile
         platforms: linux/amd64
         push: true
         tags: aayushag1961/guestbook-go:latest
